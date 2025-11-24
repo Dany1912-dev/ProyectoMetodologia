@@ -1,0 +1,23 @@
+﻿
+# Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.cache
+
+# Configuraciones con datos sensibles
+appsettings.Development.json
+
+# Archivos de base de datos
+*.db
+*.mdf
+
+# Dependencias
+node_modules/
+dist/
+
+# Logs
+*.log
+

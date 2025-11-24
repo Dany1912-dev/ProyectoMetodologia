@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Sistema Gestor</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/catalogo.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Catálogo de Productos</h1>
+            <div class="user-info">
+                <span id="userName">Usuario</span>
+                <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Filtros -->
+        <section class="filters">
+            <div class="filter-group">
+                <label for="categoriaFilter">Filtrar por categoría:</label>
+                <select id="categoriaFilter">
+                    <option value="">Todas las categorías</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <input type="text" id="searchInput" placeholder="Buscar productos...">
+            </div>
+        </section>
+
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <p>Cargando productos...</p>
+        </div>
+
+        <!-- Grid de productos -->
+        <section id="productosGrid" class="productos-grid hidden">
+            <!-- Los productos se cargan dinámicamente aquí -->
+        </section>
+
+        <!-- Mensaje si no hay productos -->
+        <div id="noProducts" class="no-products hidden">
+            <p>No se encontraron productos.</p>
+        </div>
+    </main>
+
+    <!-- Modal de detalle de producto -->
+    <div id="productModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modalContent">
+                <!-- Contenido del modal se carga dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/productos.js"></script>
+</body>
+</html>
