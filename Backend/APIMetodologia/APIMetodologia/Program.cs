@@ -53,6 +53,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IMateriaPrimaService, MateriaPrimaService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
 
 //Configurar CORS para el frontend
 builder.Services.AddCors(options =>
