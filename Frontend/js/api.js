@@ -1,5 +1,5 @@
 class APIClient {
-    constructor(baseURL = 'http://localhost:5064/api') {
+    constructor(baseURL = 'http://localhost:5000/api') {
         this.baseURL = baseURL;
         this.token = localStorage.getItem('authToken');
     }

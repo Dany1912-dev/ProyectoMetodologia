@@ -16,6 +16,10 @@ namespace APIMetodologia.Data
         public DbSet<TipoUsuario> TiposUsuario { get; set; }
         public DbSet<Producto> Productos { get; set; }
         public DbSet<CategoriaProducto> CategoriasProductos { get; set; }
+        public DbSet<MateriaPrima> MateriasPrimas { get; set; }
+        public DbSet<Proveedores> Proveedores { get; set; }
+        public DbSet<PedidoCliente> PedidosClientes { get; set; }
+        public DbSet<DetallePedidoCliente> DetallesPedidosClientes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

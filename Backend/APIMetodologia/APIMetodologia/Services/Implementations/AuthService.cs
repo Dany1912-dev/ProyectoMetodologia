@@ -5,15 +5,20 @@ using APIMetodologia.Models.Request;
 using APIMetodologia.Models.Responses;
 using APIMetodologia.Services.Interfaces;
 
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 namespace APIMetodologia.Services.Implementations
 {
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
-
-        public AuthService(AppDbContext context)
+        private readonly IConfiguration _configuration;
+        public AuthService(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public async Task<bool> EmailExiste(string email)
@@ -99,7 +104,7 @@ namespace APIMetodologia.Services.Implementations
                 }
 
                 // TODO: Generar JWT token (lo implementaremos después)
-                var token = "token_temporal_" + usuario.IdUsuario;
+                var token = GenerarToken(usuario);
 
                 return new AuthResponse
                 {
@@ -120,6 +125,31 @@ namespace APIMetodologia.Services.Implementations
             {
                 return new AuthResponse { Exito = false, Mensaje = $"Error en login: {ex.Message}" };
             }
+        }
+
+        private string GenerarToken(Usuario usuario)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim (ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
+                new Claim (ClaimTypes.Email, usuario.Email),
+                new Claim (ClaimTypes.Role, usuario.TipoUsuario.Nombre),
+                new Claim ("Nombre Completo", $"{usuario.Nombre} {usuario.Apellido1}")
+            };
+
+            var jwtkey = _configuration["Jwt:Key"];
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtkey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(7),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private async Task<int> CrearDireccionBasica(RegistroClienteRequest request)

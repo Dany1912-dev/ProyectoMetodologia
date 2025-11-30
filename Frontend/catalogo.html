@@ -6,13 +6,43 @@
     <title>Catálogo - Sistema Gestor</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/catalogo.css">
+    <link rel="stylesheet" href="css/carrito.css">
 </head>
+<!-- Sidebar del Carrito -->
+<div id="carritoSidebar" class="carrito-sidebar hidden">
+    <div class="carrito-header">
+        <h2>🛒 Tu Carrito</h2>
+        <button id="closeCarrito" class="close-carrito">&times;</button>
+    </div>
+    
+    <div class="carrito-content">
+        <div id="carritoVacio" class="carrito-vacio">
+            <p>Tu carrito está vacío</p>
+        </div>
+        
+        <div id="carritoItems" class="carrito-items hidden">
+            <!-- Items del carrito se cargan aquí -->
+        </div>
+    </div>
+    
+    <div class="carrito-footer">
+        <div class="carrito-total">
+            <strong>Total: $<span id="carritoTotal">0.00</span></strong>
+        </div>
+        <button id="procesarPedido" class="btn-primary btn-procesar">Procesar Pedido</button>
+        <button id="limpiarCarrito" class="btn-secondary btn-limpiar">Limpiar Carrito</button>
+    </div>
+</div>
 <body>
     <header class="header">
         <div class="container">
             <h1>Catálogo de Productos</h1>
             <div class="user-info">
                 <span id="userName">Usuario</span>
+                <button id="carritoBtn" class="btn-carrito-header">
+                    🛒 Carrito
+                    <span id="carritoBadge" class="carrito-badge hidden">0</span>
+                </button>
                 <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
             </div>
         </div>
@@ -60,5 +90,7 @@
 
     <script src="js/api.js"></script>
     <script src="js/productos.js"></script>
+    <script src="js/carrito.js"></script>
+    <script src="js/carrito-ui.js"></script>
 </body>
 </html>
