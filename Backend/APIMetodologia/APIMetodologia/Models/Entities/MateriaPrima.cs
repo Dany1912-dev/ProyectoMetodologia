@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace APIMetodologia.Models.Entities
 {
@@ -20,13 +21,14 @@ namespace APIMetodologia.Models.Entities
         public string UnidadDeMedida { get; set; }
 
         [Column("stock_actual")]
-        public decimal StockActual { get; set; }
+        public int StockActual { get; set; }
 
         [Column("id_proveedor")]
         public int IdProveedor { get; set; }
 
         //Navegacion en la relacion con Proveedor
         [ForeignKey("IdProveedor")]
+        [JsonIgnore]
         public virtual Proveedores? Proveedor { get; set; }
     }
 }

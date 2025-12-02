@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace APIMetodologia.Models.Entities
 {
@@ -25,6 +26,7 @@ namespace APIMetodologia.Models.Entities
 
         // Navegación en la BD
         [ForeignKey("IdPedidoCliente")]
+        [JsonIgnore]
         public virtual PedidoCliente? PedidoCliente { get; set; }
         [ForeignKey("IdProducto")]
         public virtual Producto? Producto { get; set; }

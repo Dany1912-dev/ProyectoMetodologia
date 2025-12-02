@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace APIMetodologia.Controllers
 {
-    [Authorize(Roles = "Administrador, Empleado")]
     [ApiController]
     [Route("api/[controller]")]
     public class MateriasPrimasController

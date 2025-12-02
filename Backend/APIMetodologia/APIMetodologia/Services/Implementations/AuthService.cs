@@ -34,7 +34,7 @@ namespace APIMetodologia.Services.Implementations
                 {
                     return new AuthResponse { Exito = false, Mensaje = "Formato de email inválido" };
                 }
-
+                
                 if (request.Password.Length < 6)
                 {
                     return new AuthResponse { Exito = false, Mensaje = "La contraseña debe tener al menos 6 caracteres" };
@@ -45,8 +45,7 @@ namespace APIMetodologia.Services.Implementations
                     return new AuthResponse { Exito = false, Mensaje = "El email ya está registrado" };
                 }
 
-                // TODO: Crear dirección básica (por ahora usaremos una dirección temporal)
-                // Esto lo mejoraremos después
+                //Crear dirección básica (por ahora usaremos una dirección temporal)
                 var direccionId = await CrearDireccionBasica(request);
 
                 // Crear el usuario cliente
@@ -95,7 +94,6 @@ namespace APIMetodologia.Services.Implementations
                 var usuario = await _context.Usuarios
                     .Include(u => u.TipoUsuario)
                     .FirstOrDefaultAsync(u => u.Email == request.Email &&
-                                             u.IdTipoUsuario == 2 && // Solo clientes
                                              u.Estatus == 'A');
 
                 if (usuario == null || !BCrypt.Net.BCrypt.Verify(request.Password, usuario.Pass))
@@ -103,7 +101,7 @@ namespace APIMetodologia.Services.Implementations
                     return new AuthResponse { Exito = false, Mensaje = "Email o contraseña incorrectos" };
                 }
 
-                // TODO: Generar JWT token (lo implementaremos después)
+                //Generar JWT token
                 var token = GenerarToken(usuario);
 
                 return new AuthResponse
@@ -154,8 +152,6 @@ namespace APIMetodologia.Services.Implementations
 
         private async Task<int> CrearDireccionBasica(RegistroClienteRequest request)
         {
-            // Por ahora creamos una dirección temporal
-            // Esto lo mejoraremos con una ciudad/estado/pais por defecto
             var direccion = new Direccion
             {
                 Calle = request.Calle,

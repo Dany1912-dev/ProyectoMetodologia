@@ -18,9 +18,7 @@ namespace APIMetodologia.Services.Implementations
 
         public async Task<List<MateriaPrima>> ObtenerTodasMateriasPrimas()
         {
-            return await _context.MateriasPrimas
-                .Include(mp => mp.Proveedor)
-                .ToListAsync();
+            return await _context.MateriasPrimas.ToListAsync();
         }
 
         public async Task<MateriaPrima?> ObtenerMateriaPrimaPorId(int id)

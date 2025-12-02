@@ -22,7 +22,7 @@ namespace APIMetodologia.Models.Entities
         [Column("id_direccion")]
         public int IdDireccion { get; set; }
 
-        [ForeignKey("id_direccion")]
+        [ForeignKey("IdDireccion")]
         public virtual Direccion? Direccion { get; set; }
     }
 }

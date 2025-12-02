@@ -39,5 +39,8 @@ namespace APIMetodologia.Models.Entities
 
         [ForeignKey("IdTipoUsuario")]
         public virtual TipoUsuario? TipoUsuario { get; set; }
+
+        [ForeignKey("IdDireccion")]
+        public virtual Direccion? Direccion { get; set; }
     }
 }
