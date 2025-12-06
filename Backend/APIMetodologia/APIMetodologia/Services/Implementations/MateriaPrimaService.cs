@@ -32,6 +32,9 @@ namespace APIMetodologia.Services.Implementations
         {
             _context.MateriasPrimas.Add(nuevaMateria);
             await _context.SaveChangesAsync();
+
+            NotificadorSocket.EnviarNotificacion("INFO: ", $"Se creo correctamente la materia prima: {nuevaMateria.Nombre}");
+
             return nuevaMateria;
         }
 
@@ -48,6 +51,12 @@ namespace APIMetodologia.Services.Implementations
             materiaExistente.IdProveedor = materiaActualizada.IdProveedor;
 
             await _context.SaveChangesAsync();
+
+            if (materiaActualizada.StockActual < 10)
+            {
+                NotificadorSocket.EnviarNotificacion("ALERTA DE STOCK:", $"{materiaActualizada.Nombre} tiene solo {materiaActualizada.StockActual}.");
+            }
+
             return materiaExistente;
         }
 
@@ -58,6 +67,9 @@ namespace APIMetodologia.Services.Implementations
 
             _context.MateriasPrimas.Remove(materia);
             await _context.SaveChangesAsync();
+
+            NotificadorSocket.EnviarNotificacion("INFO: ", $"Se elimino la materia prima: {materia.Nombre}");
+
             return true;
         }
 

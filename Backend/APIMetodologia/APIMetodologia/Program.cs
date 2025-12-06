@@ -54,6 +54,7 @@ builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IMateriaPrimaService, MateriaPrimaService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 //Configurar CORS para el frontend
 builder.Services.AddCors(options =>
@@ -79,7 +80,6 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowWebApp");
 
 app.UseAuthentication();
-app.UseAuthorization();
 
 app.UseAuthorization();
 

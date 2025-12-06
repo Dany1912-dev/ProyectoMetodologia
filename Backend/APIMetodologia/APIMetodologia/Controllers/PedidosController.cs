@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using APIMetodologia.Models.Request;
+﻿using APIMetodologia.Models.Request;
 using APIMetodologia.Services.Interfaces;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace APIMetodologia.Controllers
 {
@@ -19,17 +20,68 @@ namespace APIMetodologia.Controllers
             _pedidoService = pedidoService;
         }
 
-        [HttpPost("manual")]
-        public async Task<IActionResult> RegistrarPedidoManual([FromBody] RegistrarPedidoManualRequest request)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RegistrarPedido([FromBody] RegistrarPedidoManualRequest request)
         {
             try
             {
-                var pedido = await _pedidoService.RegistrarPedidoManual(request);
-                return Ok(pedido);
+                var usuarioID = ObtenerUsuarioIdDeToken();
+                request.IdUsuario = usuarioID;
+
+                var pedido = await _pedidoService.RegistrarPedido(request);
+
+                return Ok(new
+                {
+                    Exito = true,
+                    IdPedido = pedido.IdPedidoCliente,
+                    Total = pedido.Total,
+                    Fecha = pedido.FechaPedido,
+                    EsPedidoEspecial = pedido.EsPedidoEspecial,
+                    FechaEntregaEspecial = pedido.FechaEntregaEspecial,
+                    Mensaje = pedido.EsPedidoEspecial ? "Pedido Especial creado exitosamente" : "Pedido creado exitosamente"
+                });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("mis-pedidos")]
+        [Authorize]
+        public async Task<IActionResult> ObtenerMisPedidos()
+        {
+            try
+            {
+                var clienteId = ObtenerUsuarioIdDeToken();
+                var pedidos = await _pedidoService.ObtenerPedidosPorCliente(clienteId);
+
+                return Ok(new
+                {
+                    Exito = true,
+                    Pedidos = pedidos.Select(p => new
+                    {
+                        p.IdPedidoCliente,
+                        p.FechaPedido,
+                        p.Total,
+                        p.Estatus,
+                        p.EsPedidoEspecial,
+                        p.FechaEntregaEspecial,
+                        p.Notas,
+                        Productos = p.DetallesPedido?.Select(d => new
+                        {
+                            d.IdProducto,
+                            d.Cantidad,
+                            d.PrecioUnitario,
+                            ProductoNombre = d.Producto?.Nombre
+                        })
+                    })
+                });
+            } 
+            catch (Exception ex)
+            {
+                return StatusCode(500, new {Exito = false, mensaje = ex.Message});
             }
         }
 
@@ -68,6 +120,18 @@ namespace APIMetodologia.Controllers
                 return NotFound(new { message = "Pedido no encontrado." });
             }
             return Ok(pedido);
+        }
+
+        private int ObtenerUsuarioIdDeToken()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                throw new UnauthorizedAccessException("Usuario no autenticado");
+            }
+
+            return int.Parse(userIdClaim);
         }
     }
 }

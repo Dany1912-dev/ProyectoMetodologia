@@ -8,46 +8,25 @@
     <link rel="stylesheet" href="css/catalogo.css">
     <link rel="stylesheet" href="css/carrito.css">
 </head>
-<!-- Sidebar del Carrito -->
-<div id="carritoSidebar" class="carrito-sidebar hidden">
-    <div class="carrito-header">
-        <h2>🛒 Tu Carrito</h2>
-        <button id="closeCarrito" class="close-carrito">&times;</button>
-    </div>
-    
-    <div class="carrito-content">
-        <div id="carritoVacio" class="carrito-vacio">
-            <p>Tu carrito está vacío</p>
-        </div>
-        
-        <div id="carritoItems" class="carrito-items hidden">
-            <!-- Items del carrito se cargan aquí -->
-        </div>
-    </div>
-    
-    <div class="carrito-footer">
-        <div class="carrito-total">
-            <strong>Total: $<span id="carritoTotal">0.00</span></strong>
-        </div>
-        <button id="procesarPedido" class="btn-primary btn-procesar">Procesar Pedido</button>
-        <button id="limpiarCarrito" class="btn-secondary btn-limpiar">Limpiar Carrito</button>
-    </div>
-</div>
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="container">
             <h1>Catálogo de Productos</h1>
             <div class="user-info">
                 <span id="userName">Usuario</span>
+                <button id="perfilBtn" class="btn-perfil">👤 Mi Perfil</button>
                 <button id="carritoBtn" class="btn-carrito-header">
                     🛒 Carrito
                     <span id="carritoBadge" class="carrito-badge hidden">0</span>
                 </button>
+                <button id="misPedidosBtn" class="btn-pedidos">Mis Pedidos</button>
                 <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
             </div>
         </div>
     </header>
 
+    <!-- Contenido principal -->
     <main class="container">
         <!-- Filtros -->
         <section class="filters">
@@ -88,9 +67,55 @@
         </div>
     </div>
 
+    <!-- Sidebar del Carrito (DENTRO del body) -->
+    <div id="carritoSidebar" class="carrito-sidebar hidden">
+        <div class="carrito-header">
+            <h2>🛒 Tu Carrito</h2>
+            <button id="closeCarrito" class="close-carrito">&times;</button>
+        </div>
+        
+        <div class="carrito-content">
+            <div id="carritoVacio" class="carrito-vacio">
+                <p>Tu carrito está vacío</p>
+            </div>
+            
+            <div id="carritoItems" class="carrito-items hidden">
+                <!-- Items del carrito se cargan aquí -->
+            </div>
+        </div>
+        
+        <div class="carrito-footer">
+            <div class="carrito-total">
+                <strong>Total: $<span id="carritoTotal">0.00</span></strong>
+            </div>
+            <button id="procesarPedido" class="btn-primary btn-procesar">Procesar Pedido</button>
+            <button id="limpiarCarrito" class="btn-secondary btn-limpiar">Limpiar Carrito</button>
+        </div>
+    </div>
+
+    <!-- Overlay para el carrito (DENTRO del body) -->
+    <div class="carrito-overlay"></div>
+
+    <!-- Scripts -->
     <script src="js/api.js"></script>
-    <script src="js/productos.js"></script>
+    <script src="js/CarritoManager.js"></script>
     <script src="js/carrito.js"></script>
-    <script src="js/carrito-ui.js"></script>
+    <script>
+        // Redirigir a Mis Pedidos
+        document.getElementById('misPedidosBtn').addEventListener('click', () => {
+            window.location.href = 'MisPedido.html';
+        });
+        
+        // Inicializar badge del carrito al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const carritoManager = new CarritoManager();
+            carritoManager.actualizarBadge();
+        });
+    </script>
+    <script>
+        document.getElementById('perfilBtn').addEventListener('click', () => {
+            window.location.href = 'perfil.html';
+        });
+    </script>
 </body>
 </html>

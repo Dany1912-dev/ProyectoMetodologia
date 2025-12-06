@@ -19,8 +19,23 @@ namespace APIMetodologia.Services.Implementations
             _context = context;
         }
 
-        public async Task<PedidoCliente> RegistrarPedidoManual(RegistrarPedidoManualRequest request)
+        public async Task<PedidoCliente> RegistrarPedido(RegistrarPedidoManualRequest request)
         {
+            if (request.EsPedidoEspecial)
+            {
+                if (!request.FechaEntregaEspecial.HasValue)
+                {
+                    throw new Exception("Los pedidos especiales requieren una fecha de entrega");
+                }
+                DateTime fechaEntrega = request.FechaEntregaEspecial.Value;
+                var fechaAnticipacion = (fechaEntrega.Date - DateTime.Now.Date).Days;
+
+                if (fechaAnticipacion < 3)
+                {
+                    throw new Exception("Los pedidos especiales requieren al menos 3 dias de anticipacion");
+                }
+            }
+
             var idProductos = request.Productos.Select(p => p.IdProducto).ToList();
             var productosDb = await _context.Productos
                 .Where(p => idProductos.Contains(p.IdProducto))
@@ -48,7 +63,10 @@ namespace APIMetodologia.Services.Implementations
                 IdUsuario = request.IdUsuario,
                 FechaPedido = DateTime.Now,
                 Estatus = "Pendiente",
-                Total = totalPedido
+                Total = totalPedido,
+                Notas = request.Notas,
+                EsPedidoEspecial = request.EsPedidoEspecial,
+                FechaEntregaEspecial = request.FechaEntregaEspecial
             };
 
             _context.PedidosClientes.Add(pedido);
@@ -58,6 +76,8 @@ namespace APIMetodologia.Services.Implementations
             _context.DetallesPedidosClientes.AddRange(detalles);
             await _context.SaveChangesAsync();
 
+            NotificadorSocket.EnviarNotificacion("Nuevo Pedido", $"Se ha registrado el pedido #{pedido.IdPedidoCliente} automáticamente.");
+
             pedido.DetallesPedido = detalles;
 
             return pedido;
@@ -65,7 +85,7 @@ namespace APIMetodologia.Services.Implementations
 
         public async Task<List<PedidoCliente>> ObtenerPedidosActivos()
         {
-            var estatusActivos = new List<string> { "Pendiente", "En Proceso", "Listos" };
+            var estatusActivos = new List<string> { "Pendiente", "En Proceso", "Completado", "Cancelado" };
 
             return await _context.PedidosClientes
                 .Include(p => p.DetallesPedido)
@@ -93,6 +113,16 @@ namespace APIMetodologia.Services.Implementations
                 .Include(p => p.DetallesPedido)
                 .Include(p => p.Usuario)
                 .FirstOrDefaultAsync(p => p.IdPedidoCliente == idPedido);
+        }
+
+        public async Task<List<PedidoCliente>> ObtenerPedidosPorCliente(int clienteId)
+        {
+            return await _context.PedidosClientes
+                .Include(p => p.DetallesPedido!)
+                .ThenInclude(d => d.Producto!) // Para nombre del producto
+                .Where(p => p.IdUsuario == clienteId)
+                .OrderByDescending(p => p.FechaPedido) // Más recientes primero
+                .ToListAsync();
         }
     }
 }

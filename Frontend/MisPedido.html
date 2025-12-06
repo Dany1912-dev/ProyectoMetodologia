@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - Sistema Gestor</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/catalogo.css">
+    <link rel="stylesheet" href="css/mispedidos.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Mis Pedidos</h1>
+            <div class="user-info">
+                <span id="userName">Usuario</span>
+                <a href="catalogo.html" class="btn-volver">Volver al Catálogo</a>
+                <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pedidos-container">
+        <!-- Loading -->
+        <div id="loadingPedidos" class="loading-pedidos">
+            <p>Cargando tus pedidos...</p>
+        </div>
+        
+        <!-- Sin pedidos -->
+        <div id="noPedidos" class="no-pedidos hidden">
+            <h3>📭 No tienes pedidos aún</h3>
+            <p>Cuando realices tu primer pedido, aparecerá aquí.</p>
+            <a href="catalogo.html" class="btn-primary" style="margin-top: 20px; display: inline-block;">
+                Realizar mi primer pedido
+            </a>
+        </div>
+        
+        <!-- Lista de pedidos -->
+        <div id="pedidosLista" class="pedidos-lista hidden">
+            <!-- Los pedidos se cargan dinámicamente aquí -->
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/mis-pedidos.js"></script>
+</body>
+</html>

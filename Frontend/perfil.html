@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Sistema Gestor</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/catalogo.css">
+    <link rel="stylesheet" href="css/perfil.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Mi Perfil</h1>
+            <div class="user-info">
+                <span id="userName">Usuario</span>
+                <a href="catalogo.html" class="btn-secondary" style="margin-right: 10px;">Catálogo</a>
+                <a href="MisPedido.html" class="btn-secondary" style="margin-right: 10px;">Mis Pedidos</a>
+                <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="perfil-container">
+        <!-- Loading -->
+        <div id="loadingPerfil" class="loading-perfil">
+            <p>Cargando información del perfil...</p>
+        </div>
+        
+        <!-- Contenido principal (oculto inicialmente) -->
+        <div id="perfilContent" class="hidden">
+            <!-- Encabezado del perfil -->
+            <div class="perfil-header">
+                <div>
+                    <h2 id="perfilNombreCompleto">Cargando...</h2>
+                    <p id="perfilEmail" style="color: #666; margin-top: 5px;">Cargando...</p>
+                </div>
+                <div class="perfil-avatar" id="avatarIniciales">
+                    ??
+                </div>
+            </div>
+            
+            <!-- Pestañas -->
+            <div class="perfil-tabs">
+                <button class="tab-btn active" data-tab="info-personal">Información Personal</button>
+                <button class="tab-btn" data-tab="direccion">Dirección</button>
+                <button class="tab-btn" data-tab="seguridad">Seguridad</button>
+                <button class="tab-btn" data-tab="estadisticas">Estadísticas</button>
+            </div>
+            
+            <!-- Pestaña: Información Personal -->
+            <div id="tab-info-personal" class="tab-content active">
+                <div class="perfil-card">
+                    <h3>Información Personal</h3>
+                    
+                    <div class="info-grid">
+                        <!-- Nombre -->
+                        <div class="info-item">
+                            <span class="info-label">Nombre</span>
+                            <div class="info-value" data-field="nombre" onclick="abrirEdicion('nombre')">
+                                <span id="infoNombre">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formNombre">
+                                <div class="form-group">
+                                    <label for="editNombre">Nombre</label>
+                                    <input type="text" id="editNombre" class="form-control" placeholder="Tu nombre">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn-primary btn-guardar" onclick="guardarCampo('nombre')">Guardar</button>
+                                    <button type="button" class="btn-secondary btn-cancelar" onclick="cerrarEdicion('nombre')">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Primer Apellido -->
+                        <div class="info-item">
+                            <span class="info-label">Primer Apellido</span>
+                            <div class="info-value" data-field="apellido1" onclick="abrirEdicion('apellido1')">
+                                <span id="infoApellido1">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formApellido1">
+                                <div class="form-group">
+                                    <label for="editApellido1">Primer Apellido</label>
+                                    <input type="text" id="editApellido1" class="form-control" placeholder="Tu primer apellido">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn-primary btn-guardar" onclick="guardarCampo('apellido1')">Guardar</button>
+                                    <button type="button" class="btn-secondary btn-cancelar" onclick="cerrarEdicion('apellido1')">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Segundo Apellido -->
+                        <div class="info-item">
+                            <span class="info-label">Segundo Apellido</span>
+                            <div class="info-value" data-field="apellido2" onclick="abrirEdicion('apellido2')">
+                                <span id="infoApellido2">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formApellido2">
+                                <div class="form-group">
+                                    <label for="editApellido2">Segundo Apellido</label>
+                                    <input type="text" id="editApellido2" class="form-control" placeholder="Tu segundo apellido">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn-primary btn-guardar" onclick="guardarCampo('apellido2')">Guardar</button>
+                                    <button type="button" class="btn-secondary btn-cancelar" onclick="cerrarEdicion('apellido2')">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Email (NO EDITABLE) -->
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <div class="info-value">
+                                <span id="infoEmail">Cargando...</span>
+                            </div>
+                            <small style="color: #666; display: block; margin-top: 5px;">El email no se puede cambiar</small>
+                        </div>
+                        
+                        <!-- Teléfono -->
+                        <div class="info-item">
+                            <span class="info-label">Teléfono</span>
+                            <div class="info-value" data-field="telefono" onclick="abrirEdicion('telefono')">
+                                <span id="infoTelefono">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formTelefono">
+                                <div class="form-group">
+                                    <label for="editTelefono">Teléfono</label>
+                                    <input type="tel" id="editTelefono" class="form-control" placeholder="Tu teléfono">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn-primary btn-guardar" onclick="guardarCampo('telefono')">Guardar</button>
+                                    <button type="button" class="btn-secondary btn-cancelar" onclick="cerrarEdicion('telefono')">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tipo de Usuario (NO EDITABLE) -->
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Usuario</span>
+                            <div class="info-value">
+                                <span id="infoTipoUsuario">Cargando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pestaña: Dirección -->
+            <div id="tab-direccion" class="tab-content">
+                <div class="perfil-card">
+                    <h3>Dirección de Envío</h3>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Calle</span>
+                            <div class="info-value editable" data-field="calle">
+                                <span id="infoCalle">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formCalle">
+                                <div class="form-group">
+                                    <label for="editCalle">Calle</label>
+                                    <input type="text" id="editCalle" placeholder="Nombre de la calle">
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary btn-guardar" data-field="calle">Guardar</button>
+                                    <button class="btn-secondary btn-cancelar">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Número Exterior</span>
+                            <div class="info-value editable" data-field="numeroExterior">
+                                <span id="infoNumeroExterior">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formNumeroExterior">
+                                <div class="form-group">
+                                    <label for="editNumeroExterior">Número Exterior</label>
+                                    <input type="text" id="editNumeroExterior" placeholder="Número">
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary btn-guardar" data-field="numeroExterior">Guardar</button>
+                                    <button class="btn-secondary btn-cancelar">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Número Interior</span>
+                            <div class="info-value editable" data-field="numeroInterior">
+                                <span id="infoNumeroInterior">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formNumeroInterior">
+                                <div class="form-group">
+                                    <label for="editNumeroInterior">Número Interior</label>
+                                    <input type="text" id="editNumeroInterior" placeholder="Número interior (opcional)">
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary btn-guardar" data-field="numeroInterior">Guardar</button>
+                                    <button class="btn-secondary btn-cancelar">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Colonia</span>
+                            <div class="info-value editable" data-field="colonia">
+                                <span id="infoColonia">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formColonia">
+                                <div class="form-group">
+                                    <label for="editColonia">Colonia</label>
+                                    <input type="text" id="editColonia" placeholder="Nombre de la colonia">
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary btn-guardar" data-field="colonia">Guardar</button>
+                                    <button class="btn-secondary btn-cancelar">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Código Postal</span>
+                            <div class="info-value editable" data-field="codigoPostal">
+                                <span id="infoCodigoPostal">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formCodigoPostal">
+                                <div class="form-group">
+                                    <label for="editCodigoPostal">Código Postal</label>
+                                    <input type="text" id="editCodigoPostal" placeholder="Código postal">
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary btn-guardar" data-field="codigoPostal">Guardar</button>
+                                    <button class="btn-secondary btn-cancelar">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Referencias</span>
+                            <div class="info-value editable" data-field="referencias">
+                                <span id="infoReferencias">Cargando...</span>
+                                <span class="edit-icon">✏️ Editar</span>
+                            </div>
+                            <div class="form-edit" id="formReferencias">
+                                <div class="form-group">
+                                    <label for="editReferencias">Referencias</label>
+                                    <input type="text" id="editReferencias" placeholder="Referencias adicionales">
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary btn-guardar" data-field="referencias">Guardar</button>
+                                    <button class="btn-secondary btn-cancelar">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pestaña: Seguridad -->
+            <div id="tab-seguridad" class="tab-content">
+                <div class="perfil-card">
+                    <h3>Seguridad de la Cuenta</h3>
+                    
+                    <div class="perfil-section">
+                        <h4>Cambiar Contraseña</h4>
+                        <form id="formCambiarPassword">
+                            <div class="form-group">
+                                <label for="currentPassword">Contraseña Actual</label>
+                                <input type="password" id="currentPassword" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newPassword">Nueva Contraseña</label>
+                                <input type="password" id="newPassword" required>
+                                <div class="password-strength" id="passwordStrength">
+                                    Seguridad: <span class="strength-weak">Débil</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirmar Nueva Contraseña</label>
+                                <input type="password" id="confirmPassword" required>
+                                <div id="passwordMatch" style="font-size: 12px; margin-top: 5px;"></div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Cambiar Contraseña</button>
+                                <button type="reset" class="btn-secondary">Limpiar</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="perfil-section">
+                        <h4>Sesión Actual</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Último Acceso</span>
+                                <div class="info-value" id="ultimoAcceso">
+                                    Cargando...
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Dispositivo</span>
+                                <div class="info-value" id="dispositivoInfo">
+                                    Cargando...
+                                </div>
+                            </div>
+                        </div>
+                        <button id="btnCerrarSesionTodos" class="btn-secondary" style="margin-top: 15px;">
+                            Cerrar Sesión en Todos los Dispositivos
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pestaña: Estadísticas -->
+            <div id="tab-estadisticas" class="tab-content">
+                <div class="perfil-card">
+                    <h3>Mis Estadísticas</h3>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="statTotalPedidos">0</div>
+                            <div class="stat-label">Pedidos Totales</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="statPedidosActivos">0</div>
+                            <div class="stat-label">Pedidos Activos</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="statTotalGastado">$0</div>
+                            <div class="stat-label">Total Gastado</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="statPedidosEspeciales">0</div>
+                            <div class="stat-label">Pedidos Especiales</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="statPromedioPedido">$0</div>
+                            <div class="stat-label">Promedio por Pedido</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="statMiembroDesde">-</div>
+                            <div class="stat-label">Miembro Desde</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="perfil-card" style="margin-top: 20px;">
+                    <h3>Actividad Reciente</h3>
+                    <div id="actividadReciente">
+                        <p style="text-align: center; color: #666; padding: 20px;">
+                            Cargando actividad...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/perfil.js"></script>
+</body>
+</html>

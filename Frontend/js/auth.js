@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (resultado.exito) {
                 api.setToken(resultado.token);
+                localStorage.setItem('authToken', resultado.token)
+
+                setTimeout(() => {
+                    window.api = new APIClient();
+                    console.log('🔑 Token configurado en nueva instancia de api');
+                }, 100);
+                
                 localStorage.setItem('userInfo', JSON.stringify(resultado.usuario));
                 mostrarMensaje('¡Bienvenido! Redirigiendo al catálogo...', 'success');
                 

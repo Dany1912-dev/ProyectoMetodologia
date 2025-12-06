@@ -5,9 +5,10 @@ namespace APIMetodologia.Services.Interfaces
 {
     public interface IPedidoService
     {
-        Task<PedidoCliente> RegistrarPedidoManual(RegistrarPedidoManualRequest request);
+        Task<PedidoCliente> RegistrarPedido(RegistrarPedidoManualRequest request);
         Task<List<PedidoCliente>> ObtenerPedidosActivos();
         Task<PedidoCliente?> ActualizarEstatusPedido(int idPedido, string nuevoEstatus);
         Task<PedidoCliente?> ObtenerPedidoPorId(int idPedido);
+        Task<List<PedidoCliente>> ObtenerPedidosPorCliente(int clienteId);
     }
 }

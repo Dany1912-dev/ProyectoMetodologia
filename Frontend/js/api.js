@@ -6,32 +6,59 @@ class APIClient {
 
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
-        
-        const config = {
-            headers: {
+            
+            // CONFIGURACIÓN DE HEADERS
+            const headers = {
                 'Content-Type': 'application/json',
                 ...options.headers
-            },
-            ...options
-        };
-
-        // Agregar token si existe
-        if (this.token) {
-            config.headers['Authorization'] = `Bearer ${this.token}`;
-        }
-
-        try {
-            const response = await fetch(url, config);
+            };
             
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            // ✅ AÑADIR TOKEN SI EXISTE
+            if (this.token) {
+                headers['Authorization'] = `Bearer ${this.token}`;
+                console.log(`🔐 Enviando token a ${endpoint}`);
+            } else {
+                console.warn(`⚠️ No hay token para ${endpoint}`);
+                // Si no hay token pero el endpoint requiere auth, mejor redirigir
+                if (endpoint.includes('/Pedidos/') || endpoint.includes('/Usuarios/')) {
+                    window.location.href = 'index.html?error=no_token';
+                    throw new Error('No autenticado');
+                }
             }
-
-            return await response.json();
-        } catch (error) {
-            console.error('Error en la petición API:', error);
-            throw error;
-        }
+            
+            const config = {
+                method: options.method || 'GET',
+                headers: headers,
+                body: options.body
+            };
+            
+            console.log(`🌐 ${config.method} ${url}`);
+            console.log('📤 Headers:', headers);
+            
+            try {
+                const response = await fetch(url, config);
+                
+                console.log(`📥 Respuesta ${response.status} de ${endpoint}`);
+                
+                // MANEJO ESPECIAL PARA 401
+                if (response.status === 401) {
+                    console.error('❌ 401 Unauthorized - Token inválido');
+                    this.clearToken();
+                    window.location.href = 'index.html?error=unauthorized';
+                    throw new Error('Sesión expirada o inválida');
+                }
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`❌ Error ${response.status}:`, errorText);
+                    throw new Error(`Error ${response.status}: ${errorText}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error(`❌ Error en ${endpoint}:`, error);
+                throw error;
+            }
     }
 
     // Métodos específicos para Auth
@@ -66,6 +93,77 @@ class APIClient {
         return this.request('/Productos/categorias');
     }
 
+    // MÉTODOS NUEVOS PARA PEDIDOS
+    async crearPedido(datosPedido) {
+        return this.request('/Pedidos', {
+            method: 'POST',
+            body: JSON.stringify({
+                productos: datosPedido.productos.map(p => ({
+                    IdProducto: p.IdProducto || p.idProducto,
+                    Cantidad: p.Cantidad || p.cantidad
+                })),
+                Notas: datosPedido.notas || "",
+                EsPedidoEspecial: datosPedido.esPedidoEspecial || false,
+                FechaEntregaEspecial: datosPedido.fechaEntregaEspecial || null
+            })
+        });
+    }
+
+    async cancelarPedido(idPedido) {
+        return this.request(`/Pedidos/${idPedido}/estatus/Cancelado`, {
+            method: 'PUT'
+        });
+    }
+
+    async obtenerMisPedidos() {
+        return this.request('/Pedidos/mis-pedidos');
+    }
+
+    // Métodos para Perfil (opcionales)
+    async obtenerPerfil() {
+        return this.request('/Usuarios/perfil');
+    }
+
+    async actualizarPerfil(datosPerfil) {
+        return this.request('/Usuarios/perfil', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Nombre: datosPerfil.nombre,
+                Apellido1: datosPerfil.apellido1,
+                Apellido2: datosPerfil.apellido2,
+                Telefono: datosPerfil.telefono
+            })
+        });
+    }
+
+    async actualizarDireccion(datosDireccion) {
+        return this.request('/Usuarios/direccion', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Calle: datosDireccion.calle,
+                NumeroExterior: datosDireccion.numeroExterior,
+                NumeroInterior: datosDireccion.numeroInterior,
+                Colonia: datosDireccion.colonia,
+                CodigoPostal: datosDireccion.codigoPostal,
+                Referencias: datosDireccion.referencias
+            })
+        });
+    }
+
+    async cambiarPassword(passwordActual, nuevaPassword) {
+        return this.request('/Usuarios/cambiar-password', {
+            method: 'POST',
+            body: JSON.stringify({
+                PasswordActual: passwordActual,
+                NuevaPassword: nuevaPassword
+            })
+        });
+    }
+
+    async obtenerEstadisticas() {
+        return this.request('/Usuarios/estadisticas');
+    }
+
     // Guardar token
     setToken(token) {
         this.token = token;
@@ -76,6 +174,7 @@ class APIClient {
     clearToken() {
         this.token = null;
         localStorage.removeItem('authToken');
+        localStorage.removeItem('userInfo'); // También limpiar info de usuario
     }
 }
 

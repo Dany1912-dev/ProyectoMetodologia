@@ -72,14 +72,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function procesarPedido() {
+    async function procesarPedido() {
         const carrito = carritoManager.obtenerCarrito();
+    
         if (carrito.length === 0) {
             mostrarMensaje('El carrito está vacío', 'error');
             return;
         }
-        mostrarMensaje('Funcionalidad de pedido en desarrollo', 'info');
-        // Aquí integrarás con el backend para crear el pedido
+        
+        // Preguntar si es pedido especial
+        const esEspecial = confirm('¿Es un pedido especial para evento?');
+        let fechaEntregaEspecial = null;
+        let notas = "";
+        
+        if (esEspecial) {
+            // Solicitar fecha (mínimo 3 días después)
+            const fechaMinima = new Date();
+            fechaMinima.setDate(fechaMinima.getDate() + 3);
+            
+            const fechaInput = prompt(
+                `Ingrese fecha de entrega (mínimo ${fechaMinima.toLocaleDateString()}):`,
+                fechaMinima.toISOString().split('T')[0]
+            );
+            
+            if (!fechaInput) return;
+            
+            fechaEntregaEspecial = new Date(fechaInput);
+            notas = prompt('Notas especiales para el pedido:', '');
+        }
+        
+        try {
+            const pedidoData = {
+                productos: carrito.map(item => ({
+                    IdProducto: item.idProducto,
+                    Cantidad: item.cantidad
+                })),
+                notas: notas,
+                esPedidoEspecial: esEspecial,
+                fechaEntregaEspecial: esEspecial ? fechaEntregaEspecial.toISOString() : null
+            };
+            
+            const resultado = await api.crearPedido(pedidoData);
+            
+            if (resultado.Exito) {
+                carritoManager.limpiarCarrito();
+                mostrarMensaje(`Pedido #${resultado.IdPedido} creado`, 'success');
+                cerrarCarrito();
+                
+                // Redirigir a mis pedidos
+                setTimeout(() => {
+                    window.location.href = 'mis-pedidos.html';
+                }, 2000);
+            }
+        } catch (error) {
+            mostrarMensaje('Error: ' + error.message, 'error');
+        }
     }
 
     // Funciones globales para los botones del carrito

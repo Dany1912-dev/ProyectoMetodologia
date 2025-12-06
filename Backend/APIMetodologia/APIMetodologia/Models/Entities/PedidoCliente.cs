@@ -22,6 +22,15 @@ namespace APIMetodologia.Models.Entities
         [Column("total")]
         public decimal Total { get; set; }
 
+        [Column ("notas")]
+        public string? Notas { get; set; }
+
+        [Column("es_pedido_especial")]
+        public bool EsPedidoEspecial {  get; set; }
+
+        [Column("fecha_entrega_especial")]
+        public DateTime? FechaEntregaEspecial { get; set; }
+
         // Navegación en la BD
         [ForeignKey("IdUsuario")]
         public virtual Usuario? Usuario { get; set; }

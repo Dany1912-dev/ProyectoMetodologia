@@ -20,7 +20,7 @@ namespace APIMetodologia.Services.Implementations
         {
             var hace24horas = DateTime.Now.AddHours(-24);
             var totalVentas = await _context.PedidosClientes
-                .Where(p => p.Estatus == "Entregado" && p.FechaPedido >= hace24horas)
+                .Where(p => p.Estatus == "Completado" && p.FechaPedido >= hace24horas)
                 .SumAsync(p => p.Total);
             return totalVentas;
         }

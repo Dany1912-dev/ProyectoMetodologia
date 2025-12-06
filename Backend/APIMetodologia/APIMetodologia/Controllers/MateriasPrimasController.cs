@@ -9,7 +9,7 @@ namespace APIMetodologia.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MateriasPrimasController
+    public class MateriasPrimasController : ControllerBase
     {
         private readonly IMateriaPrimaService _materiaPrimaService;
 
